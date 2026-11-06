@@ -23,8 +23,8 @@ class Settings(BaseSettings):
     google_genai_use_vertex: bool = Field(default=False)
 
     # Models
-    onboarding_model_name: str = Field(default="gemini-2.5-flash")
-    triage_model_name: str = Field(default="gemini-2.5-pro")
+    onboarding_model_name: str = Field(default="gemini-3.8-flash")
+    triage_model_name: str = Field(default="gemini-4-argon")
 
     # Hospital Domain Config
     hospital_name: str = Field(default="St. Jude Memorial Health System")
