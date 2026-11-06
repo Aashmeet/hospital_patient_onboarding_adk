@@ -1,0 +1,64 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: patient-onboarding-agent
+  namespace: default
+  labels:
+    cloud.google.com/location: us-central1
+    app.kubernetes.io/name: hospital-onboarding
+    hipaa-compliant: "true"
+  annotations:
+    run.googleapis.com/ingress: internal-and-cloud-load-balancing
+    run.googleapis.com/launch-stage: GA
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/minScale: "2"
+        autoscaling.knative.dev/maxScale: "20"
+        run.googleapis.com/cpu-throttling: "false"
+        run.googleapis.com/vpc-access-connector: "projects/healthcare-agent-demo/locations/us-central1/connectors/ehr-vpc-connector"
+        run.googleapis.com/vpc-access-egress: "all-traffic"
+    spec:
+      containerConcurrency: 80
+      timeoutSeconds: 300
+      serviceAccountName: sa-onboarding-agent@healthcare-agent-demo.iam.gserviceaccount.com
+      containers:
+        - image: us-central1-docker.pkg.dev/healthcare-agent-demo/hospital-agents/onboarding:1.0.0
+          ports:
+            - name: http1
+              containerPort: 8080
+          resources:
+            limits:
+              cpu: "2000m"
+              memory: "2Gi"
+          env:
+            - name: APP_ENV
+              value: "production"
+            - name: HOSPITAL_NAME
+              value: "St. Jude Memorial Health System"
+            - name: GEMINI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: gemini-api-key
+                  key: latest
+            - name: FHIR_AUTH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: ehr-fhir-auth-token
+                  key: latest
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: "https://cloudtrace.googleapis.com"
+          startupProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            periodSeconds: 15
+            failureThreshold: 3

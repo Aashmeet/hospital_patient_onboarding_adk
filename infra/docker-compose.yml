@@ -1,0 +1,44 @@
+version: "3.9"
+
+services:
+  # ADK Hospital Onboarding Application
+  onboarding-agent:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile
+    container_name: hospital-onboarding-agent
+    ports:
+      - "8080:8080"
+    environment:
+      - APP_ENV=development
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-mock-key}
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger:4317
+      - FHIR_BASE_URL=http://hapi-fhir:8080/fhir
+      - ENABLE_MOCK_EHR=true
+    depends_on:
+      - jaeger
+      - hapi-fhir
+    restart: unless-stopped
+
+  # Mock HL7 FHIR R4 EHR Server (HAPI FHIR)
+  hapi-fhir:
+    image: hapiproject/hapi:v6.8.0
+    container_name: mock-hospital-fhir-ehr
+    ports:
+      - "8081:8080"
+    environment:
+      - hapi.fhir.fhir_version=R4
+      - hapi.fhir.tester.server.server_address=http://localhost:8081/fhir
+    restart: unless-stopped
+
+  # OpenTelemetry Tracing UI (Jaeger)
+  jaeger:
+    image: jaegertracing/all-in-one:1.56
+    container_name: jaeger-telemetry
+    ports:
+      - "16686:16686" # Web UI
+      - "4317:4317"   # OTLP gRPC receiver
+      - "4318:4318"   # OTLP HTTP receiver
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+    restart: unless-stopped

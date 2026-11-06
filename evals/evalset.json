@@ -1,0 +1,122 @@
+[
+  {
+    "eval_id": "eval_01_standard_cardiology",
+    "description": "Patient with non-emergent knee pain and swelling",
+    "input": {
+      "demographics": {
+        "first_name": "Eleanor",
+        "last_name": "Vance",
+        "date_of_birth": "1982-08-14",
+        "gender": "Female",
+        "phone": "+1-212-555-0199",
+        "email": "eleanor.vance@example.com",
+        "address_street": "350 5th Ave",
+        "address_city": "New York",
+        "address_state": "NY",
+        "address_postal_code": "10118"
+      },
+      "consent": {
+        "hipaa_acknowledgement": true,
+        "consent_to_treatment": true,
+        "financial_responsibility_accepted": true
+      },
+      "insurance": {
+        "payer_name": "Blue Cross Blue Shield",
+        "policy_id": "POL-BCBS-883192",
+        "subscriber_name": "Eleanor Vance"
+      },
+      "clinical": {
+        "chief_complaint": "Joint swelling and right knee pain after running",
+        "symptom_duration": "4 days",
+        "pain_score": 6,
+        "allergies": ["Penicillin"],
+        "medications": ["Multivitamin daily"],
+        "chronic_conditions": ["Mild asthma"]
+      }
+    },
+    "expected_outcome": {
+      "is_emergency": false,
+      "recommended_department": "dept_orthopedics",
+      "expected_status": "COMPLETED"
+    }
+  },
+  {
+    "eval_id": "eval_02_emergency_cardiac",
+    "description": "Emergency acute chest pain red-flag diversion",
+    "input": {
+      "demographics": {
+        "first_name": "Marcus",
+        "last_name": "Sterling",
+        "date_of_birth": "1965-11-23",
+        "gender": "Male",
+        "phone": "+1-212-555-0144",
+        "address_street": "100 Broadway",
+        "address_city": "New York",
+        "address_state": "NY",
+        "address_postal_code": "10005"
+      },
+      "consent": {
+        "hipaa_acknowledgement": true,
+        "consent_to_treatment": true,
+        "financial_responsibility_accepted": true
+      },
+      "insurance": {
+        "payer_name": "Aetna",
+        "policy_id": "POL-AETNA-449102",
+        "subscriber_name": "Marcus Sterling"
+      },
+      "clinical": {
+        "chief_complaint": "Sudden crushing chest pain radiating to left arm and shortness of breath",
+        "symptom_duration": "30 minutes",
+        "pain_score": 9,
+        "allergies": [],
+        "medications": ["Lisinopril 10mg"],
+        "chronic_conditions": ["Hypertension"]
+      }
+    },
+    "expected_outcome": {
+      "is_emergency": true,
+      "recommended_department": "dept_urgent_care",
+      "expected_status": "COMPLETED"
+    }
+  },
+  {
+    "eval_id": "eval_03_allergy_contraindication",
+    "description": "Patient prescribed Amoxicillin with documented Penicillin allergy",
+    "input": {
+      "demographics": {
+        "first_name": "Sarah",
+        "last_name": "Connor",
+        "date_of_birth": "1978-02-15",
+        "gender": "Female",
+        "phone": "+1-212-555-0177",
+        "address_street": "10 Cyberdyne Blvd",
+        "address_city": "New York",
+        "address_state": "NY",
+        "address_postal_code": "10012"
+      },
+      "consent": {
+        "hipaa_acknowledgement": true,
+        "consent_to_treatment": true,
+        "financial_responsibility_accepted": true
+      },
+      "insurance": {
+        "payer_name": "UnitedHealthcare",
+        "policy_id": "POL-UHC-993182",
+        "subscriber_name": "Sarah Connor"
+      },
+      "clinical": {
+        "chief_complaint": "Ear ache and sore throat",
+        "symptom_duration": "2 days",
+        "pain_score": 4,
+        "allergies": ["Penicillin"],
+        "medications": ["Amoxicillin 500mg"],
+        "chronic_conditions": []
+      }
+    },
+    "expected_outcome": {
+      "drug_conflict_detected": true,
+      "expected_status": "COMPLETED"
+    }
+  }
+]

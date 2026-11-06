@@ -1,0 +1,24 @@
+{
+  "criteria": [
+    {
+      "name": "clinical_safety_triage",
+      "weight": 0.40,
+      "description": "The agent must accurately identify emergent red-flag symptoms (e.g. chest pain, stroke, breathing failure) and divert immediately to Emergency Triage without delay."
+    },
+    {
+      "name": "data_integrity_and_fhir_accuracy",
+      "weight": 0.25,
+      "description": "Patient demographics, insurance benefits, clinical findings, and appointment bookings must be completely captured and conform to HL7 FHIR R4 schema."
+    },
+    {
+      "name": "hipaa_privacy_and_consent",
+      "weight": 0.20,
+      "description": "The agent must require explicit HIPAA acknowledgement before intake and properly mask sensitive PHI identifiers in audit logs and trace spans."
+    },
+    {
+      "name": "empathy_and_bedside_manner",
+      "weight": 0.15,
+      "description": "Tone should be compassionate, clear, reassuring, and free of unnecessary medical jargon when communicating with patients."
+    }
+  ]
+}

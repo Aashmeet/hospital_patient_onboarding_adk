@@ -1,0 +1,53 @@
+# ==============================================================================
+# Production Dockerfile for Hospital Patient Onboarding Agent
+# Optimized for Google Cloud Run and Vertex AI Agent Engine
+# ==============================================================================
+
+# Build Stage: Install dependencies and wheels
+FROM python:3.11-slim AS builder
+
+WORKDIR /build
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir --prefix=/install -r requirements.txt
+
+# Final Stage: Lean, secure, non-root runtime
+FROM python:3.11-slim AS runtime
+
+# Security hardening: Create non-privileged system user for HIPAA compliance
+RUN groupadd -g 10001 appgroup && \
+    useradd -u 10001 -g appgroup -s /sbin/nologin -d /app appuser
+
+WORKDIR /app
+
+# Copy installed packages from builder
+COPY --from=builder /install /usr/local
+
+# Copy application source code
+COPY config ./config
+COPY src ./src
+COPY pyproject.toml .
+
+# Set permissions
+RUN chown -R appuser:appgroup /app
+
+# Security & runtime environment variables
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PORT=8080 \
+    APP_ENV=production
+
+USER appuser
+
+EXPOSE 8080
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD curl -f http://localhost:8080/health || exit 1
+
+ENTRYPOINT ["python", "-m", "uvicorn", "src.interfaces.api_server:app", "--host", "0.0.0.0", "--port", "8080"]

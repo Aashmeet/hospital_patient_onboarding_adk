@@ -1,0 +1,67 @@
+{
+  "hospital_name": "St. Jude Memorial Health System",
+  "departments": [
+    {
+      "id": "dept_cardiology",
+      "name": "Cardiology & Vascular Medicine",
+      "acuity_threshold": "ESI-2",
+      "lead_physician": "Dr. Sarah Chen, MD, FACC",
+      "location": "Tower B, Floor 4",
+      "available_slots": [
+        "2026-11-02 09:00",
+        "2026-11-02 11:30",
+        "2026-11-03 14:00"
+      ],
+      "prep_instructions": "Fasting 8 hours prior if lipid or angiography testing is ordered. Bring recent ECG records."
+    },
+    {
+      "id": "dept_orthopedics",
+      "name": "Orthopedic Surgery & Sports Medicine",
+      "acuity_threshold": "ESI-4",
+      "lead_physician": "Dr. Michael Torres, MD, FAAOS",
+      "location": "West Pavilion, Suite 210",
+      "available_slots": [
+        "2026-11-02 10:00",
+        "2026-11-02 13:30",
+        "2026-11-04 15:00"
+      ],
+      "prep_instructions": "Wear loose, comfortable clothing allowing easy joint examination. Bring prior X-ray/MRI CDs."
+    },
+    {
+      "id": "dept_neurology",
+      "name": "Neurology & Brain Sciences",
+      "acuity_threshold": "ESI-3",
+      "lead_physician": "Dr. Elena Rostova, MD, PhD",
+      "location": "North Wing, Floor 3",
+      "available_slots": [
+        "2026-11-03 10:30",
+        "2026-11-04 11:00"
+      ],
+      "prep_instructions": "Wash hair the night before and avoid hair styling products if EEG is planned. Bring headache/seizure journal."
+    },
+    {
+      "id": "dept_internal_med",
+      "name": "General Internal Medicine",
+      "acuity_threshold": "ESI-4",
+      "lead_physician": "Dr. James Wilson, MD",
+      "location": "Main Clinic Building, Suite 101",
+      "available_slots": [
+        "2026-11-02 08:30",
+        "2026-11-02 14:30",
+        "2026-11-03 09:30"
+      ],
+      "prep_instructions": "Bring all current prescription bottles or detailed medication list. Bring immunization history."
+    },
+    {
+      "id": "dept_urgent_care",
+      "name": "Emergency & Urgent Triage Center",
+      "acuity_threshold": "ESI-1",
+      "lead_physician": "Dr. Robert Vance, MD, FACEP",
+      "location": "Ground Floor Emergency Entrance (Bay 1)",
+      "available_slots": [
+        "IMMEDIATE_WALK_IN"
+      ],
+      "prep_instructions": "Immediate in-person arrival. Do not drive yourself if experiencing chest pain, stroke symptoms, or severe shortness of breath. Call 911 immediately if emergency."
+    }
+  ]
+}

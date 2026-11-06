@@ -1,0 +1,68 @@
+steps:
+  # 1. Run Unit Tests & Linting
+  - name: "python:3.11-slim"
+    id: "test"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |
+        pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest pytest-asyncio ruff
+        ruff check src/
+        pytest tests/
+
+  # 2. Build Docker Container
+  - name: "gcr.io/cloud-builders/docker"
+    id: "build-image"
+    args:
+      - "build"
+      - "-t"
+      - "${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO_NAME}/patient-onboarding-agent:${SHORT_SHA}"
+      - "-t"
+      - "${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO_NAME}/patient-onboarding-agent:latest"
+      - "-f"
+      - "infra/Dockerfile"
+      - "."
+
+  # 3. Security & Vulnerability Scan
+  - name: "aquasec/trivy:latest"
+    id: "scan-vulnerabilities"
+    args:
+      - "image"
+      - "--severity"
+      - "HIGH,CRITICAL"
+      - "--exit-code"
+      - "0"
+      - "${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO_NAME}/patient-onboarding-agent:${SHORT_SHA}"
+
+  # 4. Push Container Image to Artifact Registry
+  - name: "gcr.io/cloud-builders/docker"
+    id: "push-image"
+    args:
+      - "push"
+      - "--all-tags"
+      - "${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO_NAME}/patient-onboarding-agent"
+
+  # 5. Deploy to Google Cloud Run
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    id: "deploy-cloud-run"
+    entrypoint: "gcloud"
+    args:
+      - "run"
+      - "deploy"
+      - "patient-onboarding-agent"
+      - "--image=${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO_NAME}/patient-onboarding-agent:${SHORT_SHA}"
+      - "--region=${_REGION}"
+      - "--platform=managed"
+      - "--ingress=internal-and-cloud-load-balancing"
+      - "--min-instances=2"
+      - "--max-instances=20"
+      - "--service-account=sa-onboarding-agent@${PROJECT_ID}.iam.gserviceaccount.com"
+
+substitutions:
+  _REGION: "us-central1"
+  _REPO_NAME: "hospital-agents"
+
+options:
+  logging: CLOUD_LOGGING_ONLY
